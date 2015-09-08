@@ -17,7 +17,7 @@ function main() {
 		];
 		tankSprite = new Sprite(this, 62, 0, 22, 16 );
 		ciSprite = new Sprite(this, 84, 8, 36, 24);
-
+		// here it is where the game starts
 		init();
 		run();
 	});
@@ -38,7 +38,7 @@ function init() {
 	bullets=[];
 	var rows = [1,0,0,2,2];
 	for(var i=0,len = rows.length;i<len;i++){
-		for(var j=0;j <10;j++){
+		for(var j=0 ;j <10 ;j++){
 			var a = rows[i];
 			aliens.push({
 				sprite: alSprite[a],
@@ -76,7 +76,7 @@ function update() {
 	if(input.isPressed(32)){//space bar
       bullets.push(new Bullet(tank.x + 10, tank.y, -8, 2, 6, "#fff"));
 	}
-	for (var i =0,len = bullets.length;i<len;i++){
+	for (var i =0,len = bullets.length; i<len; i++){
 		var b= bullets[i];
 		b.update();
 		if (b.y+b.height<0 || b.y > display.height){
@@ -85,7 +85,24 @@ function update() {
 			len--;
 			continue;
 		}
+
+		// fucntion that determinates if a alien was hit
+		for(var j= 0, len2 = aliens.length; j<len2; j++) {
+			var a = aliens[j];
+			if(ABIntersect(b.x, b.y, b.width, b.height, a.x, a.y, a.w, a.h)){
+				aliens.splice(j,1);
+				j--;
+				len2--;
+				bullets.splice(i,1);
+				i--;
+				len--;
+
+			}
+		} 
 	}
+
+	// shots of the aliens
+
 	if (Math.random() < 0.03 && aliens.length>0){
 		var a = aliens[Math.round(Math.random() *(aliens.length - 1))];
 		for (var i =0,len=aliens.length;i<len;i++){
@@ -93,15 +110,15 @@ function update() {
 			if (ABIntersect(a.x, a.y, a.w, 100, b.x, b.y, b.w, b.h)){
 				a=b;
 			}
-			bullets.push(new Bullet(a.x + a.w*0.5,a.y + a.h, 4, 2, 4, "#fff"));
 		}
+		bullets.push(new Bullet(a.x + a.w*0.5,a.y + a.h, 4, 2, 4, "#fff"));
 	}
 	if ( frames % lvFrames === 0){
 		spFrames=(spFrames + 1)%2;
         var maxposition=0, minposition=display.width;
 		for(var i = 0,len = aliens.length;i<len;i++){
-			var a = aliens [i];
-			a.x+=30*direction;
+			var a = aliens[i];
+			a.x+= 30*direction;
 
 			maxposition= Math.max(maxposition, a.x + a.w);
 			minposition=Math.min(minposition,a.x);
@@ -111,7 +128,7 @@ function update() {
 			for (var i = 0,len=aliens.length; i < len; i++) {
 				aliens[i].x += 30 * direction;
 				aliens[i].y +=30;
-			};
+			}
 		}
 	}
 };
