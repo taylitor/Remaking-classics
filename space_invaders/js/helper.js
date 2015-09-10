@@ -27,6 +27,7 @@ Screen.prototype.clear=function(sp,x,y){
 Screen.prototype.drawSprite = function(sp, x, y) {
 	this.ctx.drawImage(sp.img, sp.x, sp.y, sp.w, sp.h, x, y, sp.w, sp.h);
 };
+
 Screen.prototype.drawBullet = function(bullet) {
 	this.ctx.fillStyle = bullet.color;
 	this.ctx.fillRect(bullet.x, bullet.y,bullet.width,bullet.height);

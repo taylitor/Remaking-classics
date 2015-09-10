@@ -35,7 +35,49 @@ function init() {
 		x:(display.width - tankSprite.w) / 2,
 		y:display.height - (30 + tankSprite.h)
 	};
+	//creating a bullets object
 	bullets=[];
+	//creating the city object with methods
+	cities={
+		canvas:null,
+		y:tank.y - (30 + ciSprite.h),
+		h:ciSprite.h,
+
+		init: function() {
+			this.canvas = document.createElement("canvas");
+			this.canvas.width = display.width;
+			this.canvas.height = this.h;
+			this.ctx = this.canvas.getContext("2d");
+
+			for(var i=0;i<4;i++){
+				this.ctx.drawImage(ciSprite.img, ciSprite.x,ciSprite.y,
+					ciSprite.w,ciSprite.h,68+111*i,0,ciSprite.w,ciSprite.h);
+			}
+		},
+		generateDamage:function(x,y){
+			x=Math.floor(x/2)*2;
+			y=Math.floor(y/2)*2;
+			this.ctx.clearRect(x-2, y-2, 4, 4);
+			this.ctx.clearRect(x+2, y-4, 2, 4);
+			this.ctx.clearRect(x+4, y, 2, 2);
+			this.ctx.clearRect(x+2, y+2, 2, 2);
+			this.ctx.clearRect(x-4, y+2, 2, 2);
+			this.ctx.clearRect(x-6, y, 2, 2);
+			this.ctx.clearRect(x-4, y-4, 2, 2);
+			this.ctx.clearRect(x-2, y-6, 2, 2);
+			
+		},
+		hits:function(x,y) {
+			y-=this.y;
+			var data= this.ctx.getImageData(x,y,1,1);
+			if (data.data[3] !==0){
+				this.generateDamage(x,y);
+				return true;
+			}
+			return false;
+		}
+	};
+	cities.init();
 	var rows = [1,0,0,2,2];
 	for(var i=0,len = rows.length;i<len;i++){
 		for(var j=0 ;j <10 ;j++){
@@ -85,8 +127,17 @@ function update() {
 			len--;
 			continue;
 		}
-
-		// fucntion that determinates if a alien was hit
+		//function that determinates if a citie was damage
+		var height2 = b.height *0.5;
+		if (cities.y < b.y + height2 && b.y+height2 < cities.y + cities.h){
+			if (cities.hits(b.x,b.y+ height2)){
+			bullets.splice(i,1);
+			i--;
+			len--;
+			continue;
+			}
+		}
+		// function that determinates if a alien was hit
 		for(var j= 0, len2 = aliens.length; j<len2; j++) {
 			var a = aliens[j];
 			if(ABIntersect(b.x, b.y, b.width, b.height, a.x, a.y, a.w, a.h)){
@@ -96,6 +147,29 @@ function update() {
 				bullets.splice(i,1);
 				i--;
 				len--;
+
+				switch(len2){
+					case 30:{
+						this.lvFrames=40;
+						break;
+					}
+					case 20:{
+						this.lvFrames=20;
+						break;
+					}
+					case 10:{
+						this.lvFrames=10;
+						break;
+					}
+					case 5:{
+						this.lvFrames=5;
+						break;
+					}
+					case 1:{
+						this.lvFrames=1;
+						break;
+					}
+				}
 
 			}
 		} 
@@ -144,8 +218,7 @@ function render() {
 		display.drawBullet(bullets[i]);
 	}
 	display.ctx.restore();
+	display.ctx.drawImage(cities.canvas,0,cities.y);
 	display.drawSprite(tank.sprite, tank.x,tank.y);
 };
-
-
 main();
