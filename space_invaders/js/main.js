@@ -1,4 +1,4 @@
-var display, input, frames, spFrames, lvFrames;
+var display, input, frames, spFrames, lvFrames,finalScore=0;
 var alSprite, tankSprite, ciSprite;
 var aliens, direction, tank, bullets, cities;
 
@@ -84,8 +84,8 @@ function init() {
 			var a = rows[i];
 			aliens.push({
 				sprite: alSprite[a],
-				x:30 + j*30+[0,4,0][a],
-				y:30 + i*30,
+				x:30 + j*30+[0,4,0][a],  //position of the aliens on x
+				y:60 + i*30,            // position of the aliens on y
 				w:alSprite[a][0].w,
 				h:alSprite[a][0].h
 			});
@@ -147,6 +147,7 @@ function update() {
 				bullets.splice(i,1);
 				i--;
 				len--;
+				finalScore=finalScore+10;
 
 				switch(len2){
 					case 30:{
@@ -159,14 +160,6 @@ function update() {
 					}
 					case 10:{
 						this.lvFrames=10;
-						break;
-					}
-					case 5:{
-						this.lvFrames=5;
-						break;
-					}
-					case 1:{
-						this.lvFrames=1;
 						break;
 					}
 				}
@@ -200,7 +193,7 @@ function update() {
 		if (maxposition>display.width -30 || minposition < 30) {
 			direction *= -1;
 			for (var i = 0,len=aliens.length; i < len; i++) {
-				aliens[i].x += 30 * direction;
+				aliens[i].x += 30 * direction;   // when change the line position on x
 				aliens[i].y +=30;
 			}
 		}
@@ -220,5 +213,6 @@ function render() {
 	display.ctx.restore();
 	display.ctx.drawImage(cities.canvas,0,cities.y);
 	display.drawSprite(tank.sprite, tank.x,tank.y);
+	display.scoreBoard(finalScore);
 };
 main();

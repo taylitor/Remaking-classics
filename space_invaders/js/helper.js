@@ -17,8 +17,8 @@ function Screen(width, height) {
 	this.canvas.width = this.width = width;
 	this.canvas.height = this.height = height;
 	this.ctx = this.canvas.getContext("2d");
-
 	document.body.appendChild(this.canvas);
+
 };
 Screen.prototype.clear=function(sp,x,y){
 	this.ctx.clearRect(0,0,this.width,this.height);
@@ -32,6 +32,18 @@ Screen.prototype.drawBullet = function(bullet) {
 	this.ctx.fillStyle = bullet.color;
 	this.ctx.fillRect(bullet.x, bullet.y,bullet.width,bullet.height);
 }
+Screen.prototype.scoreBoard = function(counter){
+	this.ctx.font="20px Arial";
+	this.ctx.fillStyle="white";
+    this.ctx.fillText("Score< "+counter+" >",10,50);
+    this.ctx.fillText("High Score< 470 >",150,50);
+
+    if(counter===500){
+    	this.ctx.font="40px Arial";
+	    this.ctx.fillStyle="#fff";
+    	this.ctx.fillText("!!!Congratulations!!!",60,280);
+    }
+}
 
 //Sprite
 function Sprite(img, x, y, w, h) {
@@ -41,8 +53,6 @@ function Sprite(img, x, y, w, h) {
 	this.w = w;
 	this.h = h;
 };
-
-
 
 //InputHandler
 function InputHandeler() {
